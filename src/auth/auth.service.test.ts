@@ -8,14 +8,9 @@ import * as bcrypt from 'bcrypt';
 jest.mock('../user/user.repository');
 jest.mock('bcrypt');
 
-const mockedUserRepository = new UserRepository() as jest.Mocked<UserRepository>;
 const authService = new AuthService();
 
 describe('AuthService (검증)', () => {
-
-    beforeEach(() => {
-        (authService as any).userRepository = mockedUserRepository;
-    });
 
     describe('register', () => {
         it('register 함수가 존재해야 한다', () => {
@@ -24,19 +19,18 @@ describe('AuthService (검증)', () => {
     
         it('register 동일한 이메일', async () => {
             const registerDto: RegisterDto = {
-                email: 'admin@gmail.com',
+                email: 'test@gmail.com',
                 userid: '101osc',
                 nickname: '101osc',
                 password: '1234',
             };
-    
-            // findUserByEmail이 동일한 이메일을 가진 사용자를 반환하도록 모킹
-            mockedUserRepository.findUserByEmail.mockResolvedValue({
+
+            jest.spyOn(UserRepository.prototype, 'findUserByEmail').mockResolvedValue({
                 id: 1,
-                email: 'admin@gmail.com',
-                userid: 'existingUser',
-                nickname: 'existingNickname',
-                password: 'existingPassword',
+                email: 'test@gmail.com',
+                userid: '101osc',
+                nickname: '101osc',
+                password: '1234',
                 createdAt: new Date(),
             });
     
@@ -52,13 +46,11 @@ describe('AuthService (검증)', () => {
                 nickname: 'newuser',
                 password: 'password',
             };
-    
-            // findUserByEmail이 undefined을 반환하도록 모킹 (사용자가 존재하지 않음)
-            mockedUserRepository.findUserByEmail.mockResolvedValue(null);
-            // createUser가 새로운 사용자를 반환하도록 모킹
-            mockedUserRepository.createUser.mockResolvedValue({
-                id: 1,
-                email: 'newuser@gmail.com',
+
+            jest.spyOn(UserRepository.prototype, 'findUserByEmail').mockResolvedValue(null);
+            jest.spyOn(UserRepository.prototype, 'createUser').mockResolvedValue({
+                id: 2,
+                email: 'newuser@gamil.com',
                 userid: 'newuser',
                 nickname: 'newuser',
                 password: 'password',
@@ -86,7 +78,7 @@ describe('AuthService (검증)', () => {
                 password: 'password',
             };
 
-            mockedUserRepository.findUserByUserId.mockResolvedValue(null);
+            jest.spyOn(UserRepository.prototype, 'findUserByUserId').mockResolvedValue(null);
 
             await expect(authService.login(loginDto)).rejects.toThrowError(
                 createError(404, { name: 'Not Found Error', message: 'User does not exist' })
@@ -99,7 +91,7 @@ describe('AuthService (검증)', () => {
                 password: 'incorrectPassword',
             };
 
-            mockedUserRepository.findUserByUserId.mockResolvedValue({
+            jest.spyOn(UserRepository.prototype, 'findUserByUserId').mockResolvedValue({
                 id: 1,
                 email: 'existingUser@email.com',
                 userid: 'existingUser',
@@ -124,7 +116,7 @@ describe('AuthService (검증)', () => {
                 password: 'correctPassword',
             };
         
-            mockedUserRepository.findUserByUserId.mockResolvedValue({
+            jest.spyOn(UserRepository.prototype, 'findUserByUserId').mockResolvedValue({
                 id: 1,
                 email: 'existingUser@email.com',
                 userid: 'existingUser',
