@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { userService } from './user.service';
+import { UserService } from './user.service';
 import { validateParams } from '../validator/validateParams';
 import { GetUserParamsDto } from '../types/dto/user.dto';
 
+const userService = new UserService();
 export const userController = Router();
 
 /**
@@ -19,6 +20,14 @@ export const userController = Router();
  *      404:
  *       description: Not Found
  */
-userController.get('/:userid', validateParams(GetUserParamsDto), userService.getUser);
+userController.get('/:userid', validateParams(GetUserParamsDto), async (req, res, next) => {
+    const { userid } = req.params;
+    try {
+        const user = await userService.getUser(userid);
+        res.status(200).json(user);
+    } catch (error) {
+        next(error);
+    }
+});
 
 export default userController;

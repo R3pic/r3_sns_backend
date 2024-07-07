@@ -1,8 +1,9 @@
-import { Router } from 'express';
-import { authService } from './auth.service';
+import { Router, Request, Response, NextFunction } from 'express';
+import { AuthService } from './auth.service';
 import { validateBody } from '../validator/validateBody';
 import { RegisterDto } from '../types/dto/auth.dto';
 
+const authService = new AuthService();
 export const authController = Router();
 
 /**
@@ -22,6 +23,8 @@ export const authController = Router();
  *                type: string
  *              userid:
  *                type: string
+ *              nickname:
+ *                type: string
  *              password:
  *                type: string
  *     responses:
@@ -32,4 +35,12 @@ export const authController = Router();
  *       409:
  *        description: Conflict
  */
-authController.post('/register', validateBody(RegisterDto), authService.register);
+authController.post('/register', validateBody(RegisterDto), async (req: Request, res: Response, next: NextFunction) => {
+    const registerDto: RegisterDto = req.body;
+    try {
+        const result = await authService.register(registerDto);
+        res.status(201).json(result);
+    } catch (error) {
+        next(error);
+    }
+});
