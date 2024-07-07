@@ -17,7 +17,7 @@ describe('AuthService (검증)', () => {
             expect(authService.register).toBeDefined();
         });
     
-        it('register 동일한 이메일', async () => {
+        it('register시 동일한 이메일 존재할 경우', async () => {
             const registerDto: RegisterDto = {
                 email: 'test@gmail.com',
                 userid: '101osc',
@@ -39,7 +39,7 @@ describe('AuthService (검증)', () => {
             );
         });
     
-        it('register 새로운 이메일', async () => {
+        it('register시 가입 성공', async () => {
             const registerDto: RegisterDto = {
                 email: 'newuser@gmail.com',
                 userid: 'newuser',
@@ -48,9 +48,10 @@ describe('AuthService (검증)', () => {
             };
 
             jest.spyOn(UserRepository.prototype, 'findUserByEmail').mockResolvedValue(null);
+
             jest.spyOn(UserRepository.prototype, 'createUser').mockResolvedValue({
                 id: 2,
-                email: 'newuser@gamil.com',
+                email: 'newuser@gmail.com',
                 userid: 'newuser',
                 nickname: 'newuser',
                 password: 'password',
@@ -58,7 +59,7 @@ describe('AuthService (검증)', () => {
             });
     
             const result = await authService.register(registerDto);
-    
+
             expect(result).toEqual({
                 email: 'newuser@gmail.com',
                 nickname: 'newuser',
@@ -100,7 +101,6 @@ describe('AuthService (검증)', () => {
                 createdAt: new Date(),
             });
 
-            // bcrypt.compare가 false를 반환하도록 모킹
             jest.spyOn(bcrypt, 'compare').mockImplementation((password, inputpassword) => {
                 return password === inputpassword;
             });

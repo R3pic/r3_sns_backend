@@ -20,12 +20,12 @@ export class AuthService {
         const hashedPassword = await bcrypt.hash(registerDto.password, 10);
         registerDto.password = hashedPassword;
 
-        await this.userRepository.createUser(registerDto);
+        const newUser = await this.userRepository.createUser(registerDto);
 
         return {
-            email: registerDto.email,
-            nickname: registerDto.nickname,
-            userid: registerDto.userid,
+            email: newUser.email,
+            nickname: newUser.nickname,
+            userid: newUser.userid,
         };
     }
 
