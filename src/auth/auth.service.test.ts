@@ -38,6 +38,7 @@ describe('AuthService (검증)', () => {
             userid: 'existingUser',
             nickname: 'existingNickname',
             password: 'existingPassword',
+            createdAt: new Date(),
         });
 
         await expect(authService.register(registerDto)).rejects.toThrowError(
@@ -54,7 +55,7 @@ describe('AuthService (검증)', () => {
         };
 
         // findUserByEmail이 undefined을 반환하도록 모킹 (사용자가 존재하지 않음)
-        mockedUserRepository.findUserByEmail.mockResolvedValue(undefined);
+        mockedUserRepository.findUserByEmail.mockResolvedValue(null);
         // createUser가 새로운 사용자를 반환하도록 모킹
         mockedUserRepository.createUser.mockResolvedValue({
             id: 1,
@@ -62,6 +63,7 @@ describe('AuthService (검증)', () => {
             userid: 'newuser',
             nickname: 'newuser',
             password: 'password',
+            createdAt: new Date(),
         });
 
         const result = await authService.register(registerDto);

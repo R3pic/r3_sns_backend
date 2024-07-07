@@ -1,24 +1,43 @@
-import { Database } from '../database/database.memory';
+import { PrismaClient } from "@prisma/client";
 import { CreateUserDto, User } from '../types/dto/user.dto';
 
 export class UserRepository {
+    private prisma: PrismaClient;
+
+    constructor() {
+        this.prisma = new PrismaClient();
+    }
+
     async createUser(createUserDto: CreateUserDto) {
-        const newUser = {
-            id: Database.user.length + 1,
-            email: createUserDto.email,
-            userid: createUserDto.userid,
-            password: createUserDto.password,
-            nickname: createUserDto.nickname,
-        };
-        Database.user.push(newUser);
-        return newUser;
+        const user = await this.prisma.user.create({
+            data: {
+                email: createUserDto.email,
+                userid: createUserDto.userid,
+                password: createUserDto.password,
+                nickname: createUserDto.nickname,
+            },
+        });
+
+        return user;
     }
 
-    async findUserByEmail(email: string): Promise<User | undefined> {
-        return Database.user.find((u) => u.email === email);
+    async findUserByEmail(email: string) {
+        const user = await this.prisma.user.findUnique({
+            where: {
+                email: email,
+            },
+        });
+
+        return user;
     }
 
-    async findUserByUserId(userid: string): Promise<User | undefined> {
-        return Database.user.find((u) => u.userid === userid);
+    async findUserByUserId(userid: string) {
+        const user = await this.prisma.user.findUnique({
+            where: {
+                userid: userid,
+            },
+        });
+
+        return user;
     }
 }

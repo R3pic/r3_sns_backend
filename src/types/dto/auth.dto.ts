@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsDefined, IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, Min, MinLength } from 'class-validator';
 
 export class RegisterDto {
     @IsNotEmpty()
@@ -11,10 +11,22 @@ export class RegisterDto {
     @MaxLength(20)
     userid!: string;
 
-    @IsOptional()
+    @IsDefined()
     @IsString()
     @MaxLength(20)
     nickname!: string;
+
+    @IsNotEmpty()
+    @IsString()
+    password!: string;
+}
+
+export class LoginDto {
+    @IsNotEmpty()
+    @IsString()
+    @MinLength(5)
+    @MaxLength(20)
+    userid!: string;
 
     @IsNotEmpty()
     @IsString()

@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { AuthService } from './auth.service';
 import { validateBody } from '../validator/validateBody';
-import { RegisterDto } from '../types/dto/auth.dto';
+import { LoginDto, RegisterDto } from '../types/dto/auth.dto';
 
 const authService = new AuthService();
 export const authController = Router();
@@ -40,6 +40,41 @@ authController.post('/register', validateBody(RegisterDto), async (req: Request,
     try {
         const result = await authService.register(registerDto);
         res.status(201).json(result);
+    } catch (error) {
+        next(error);
+    }
+});
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Login
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *              userid:
+ *                type: string
+ *              password:
+ *                type: string
+ *     responses:
+ *      200:
+ *        description: OK
+ *      400:
+ *        description: Bad request
+ *      401:
+ *        description: Unauthorized
+ *      404:
+ *        description: Not Found
+ */
+authController.post('/login', validateBody(LoginDto), async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const result = await authService.login(req.body);
+        res.status(200).json(result);
     } catch (error) {
         next(error);
     }

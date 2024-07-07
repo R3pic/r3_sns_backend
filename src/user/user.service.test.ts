@@ -1,6 +1,5 @@
 import { describe, it, expect, jest, beforeEach } from "@jest/globals";
 import { UserService } from "./user.service";
-import { RegisterDto } from "../types/dto/auth.dto";
 import createError from 'http-errors';
 import { UserRepository } from '../user/user.repository';
 
@@ -26,7 +25,7 @@ describe('UserService (검증)', () => {
     it('getUser 존재하지 않는 사용자', async () => {
         const userid = 'existingUser';
 
-        mockedUserRepository.findUserByUserId.mockResolvedValue(undefined);
+        mockedUserRepository.findUserByUserId.mockResolvedValue(null);
 
         await expect(userService.getUser(userid)).rejects.toThrowError(
             createError(404, { name: 'Not Found Error', message: 'User does not exist' })
@@ -42,6 +41,7 @@ describe('UserService (검증)', () => {
             userid: 'existingUser',
             nickname: 'existingNickname',
             password: 'existingPassword',
+            createdAt: new Date(),
         });
 
         const result = await userService.getUser(userid);
