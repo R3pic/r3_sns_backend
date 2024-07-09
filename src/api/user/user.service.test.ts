@@ -3,7 +3,8 @@ import { UserService } from "./user.service";
 import createError from 'http-errors';
 import { UserRepository } from '../user/user.repository';
 
-const userService = new UserService();
+const userRepository = new UserRepository();
+const userService = new UserService(userRepository);
 
 describe('UserService (검증)', () => {
     describe('getUserbyId', () => {
