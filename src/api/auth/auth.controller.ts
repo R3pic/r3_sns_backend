@@ -98,20 +98,29 @@ export class AuthController {
         })(req, res, next);
     }
 
-    /**Swagger
+    /**
      * @swagger
      * /auth/withdrawal:
-     *  delete:
-     *   summary: Withdrawal
-     *  tags: [Auth]
-     * responses:
-     * 200:
-     * description: OK
-     * 401:
-     * description: Unauthorized
-     * 404:
-     * description: Not Found
-    */
+     *   delete:
+     *     summary: Withdrawal
+     *     tags: [Auth]
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: header
+     *         name: Authorization
+     *         required: true
+     *         schema:
+     *           type: string
+     *         description: Bearer token
+     *     responses:
+     *       200:
+     *         description: OK
+     *       401:
+     *         description: Unauthorized
+     *       404:
+     *         description: Not Found
+     */
     withdrawal = async (req: Request, res: Response, next: NextFunction) => {
         passport.authenticate('jwt', { session: false }, (err: Error, user: User, info: any) => {
             if (err) {
