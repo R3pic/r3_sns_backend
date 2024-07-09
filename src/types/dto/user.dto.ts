@@ -7,7 +7,7 @@ export class User {
   password!: string;
 }
 
-export class GetUserParamsDto {
+export class GetUserbyIdParamsDto {
   @IsNotEmpty()
   @IsString()
   @MinLength(5)

@@ -41,6 +41,9 @@ importers:
       prisma:
         specifier: ^5.16.1
         version: 5.16.1
+      r3_sns_backend:
+        specifier: 'link:'
+        version: 'link:'
     devDependencies:
       '@jest/globals':
         specifier: ^29.7.0

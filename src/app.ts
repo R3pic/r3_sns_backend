@@ -5,8 +5,8 @@ import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import swaggerOptions from './swagger/swaggeroption';
 import ErrorHandler from './common/ErrorHandler';
-import { authController } from './auth/auth.controller';
-import { userController } from './user/user.controller';
+import { authRouter } from './api/auth/auth.router';
+import { userRouter } from './api/user/user.router';
 import NotFoundHandler from './common/NotFoundHandler';
 
 const app = express();
@@ -26,9 +26,9 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
-// Controller (Routes)
-router.use('/auth', authController);
-router.use('/user', userController);
+// Router
+router.use('/auth', authRouter);
+router.use('/user', userRouter);
 router.use(NotFoundHandler);
 router.use(ErrorHandler);
 
