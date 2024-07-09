@@ -70,8 +70,9 @@ export class AuthController {
      *        description: Not Found
      */
     login = async (req: Request, res: Response, next: NextFunction) => {
+        const loginDto: LoginDto = req.body;
         try {
-            const result = await this.authService.login(req.body);
+            const result = await this.authService.login(loginDto);
             res.status(200).json(result);
         } catch (error) {
             next(error);
