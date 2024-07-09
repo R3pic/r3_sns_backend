@@ -1,6 +1,6 @@
-import { describe, it, expect, jest, beforeEach } from "@jest/globals";
+import { describe, it, expect, jest } from "@jest/globals";
 import { AuthService } from "./auth.service";
-import { RegisterDto } from "../types/dto/auth.dto";
+import { RegisterDto } from "../../types/dto/auth.dto";
 import createError from 'http-errors';
 import { UserRepository } from '../user/user.repository';
 import * as bcrypt from 'bcrypt';
