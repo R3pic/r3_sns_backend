@@ -78,8 +78,6 @@ export class UserController {
      *                   example: User does not exist
      */
     getUserbyId = async (req: Request, res: Response, next: NextFunction) => {
-        console.log('getUserbyId 컨트롤러 호출됨');
-        console.log('userService', this.userService);
         const { userid } = req.params;
         this.userService.getUserbyId(userid)
             .then((user) => {
