@@ -1,10 +1,8 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { UserService } from './user.service';
 
 export class UserController {
-    constructor(private readonly userService: UserService) {
-        this.userService = userService;
-    }
+    constructor(private readonly userService: UserService) { }
     /**
      * @swagger
      * /user/{userid}:
@@ -79,17 +77,20 @@ export class UserController {
      *                   type: string
      *                   example: User does not exist
      */
-    async getUserbyId(req: Request, res: Response, next: NextFunction) {
+    getUserbyId = async (req: Request, res: Response, next: NextFunction) => {
+        console.log('getUserbyId 컨트롤러 호출됨');
+        console.log('userService', this.userService);
         const { userid } = req.params;
-        try {
-            const user = await this.userService.getUserbyId(userid);
-            res.status(200).json(user);
-        } catch (error) {
-            next(error);
-        }
+        this.userService.getUserbyId(userid)
+            .then((user) => {
+                res.status(200).json(user);
+            })
+            .catch((error) => {
+                next(error);
+            });
     }
 
-    async getUserbyEmail(req: Request, res: Response, next: NextFunction) {
+    getUserbyEmail = async (req: Request, res: Response, next: NextFunction) => {
         const { email } = req.params;
         try {
             const user = await this.userService.getUserbyEmail(email);

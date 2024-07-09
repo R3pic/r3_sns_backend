@@ -3,9 +3,7 @@ import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto } from '../../types/dto/auth.dto';
 
 export class AuthController {
-    constructor(private readonly authService: AuthService) {
-        this.authService = authService;
-    }
+    constructor(private readonly authService: AuthService) {}
     /**
      * @swagger
      * /auth/register:
@@ -35,7 +33,7 @@ export class AuthController {
      *       409:
      *        description: Conflict
      */
-    async register(req: Request, res: Response, next: NextFunction) {
+    register = async (req: Request, res: Response, next: NextFunction) => {
         const registerDto: RegisterDto = req.body;
         try {
             const result = await this.authService.register(registerDto);
@@ -71,7 +69,7 @@ export class AuthController {
      *      404:
      *        description: Not Found
      */
-    async login(req: Request, res: Response, next: NextFunction) {
+    login = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const result = await this.authService.login(req.body);
             res.status(200).json(result);
