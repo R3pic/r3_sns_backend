@@ -21,6 +21,14 @@ export class UserRepository {
         return user;
     }
 
+    async deleteUser(userid: string) {
+        await this.prisma.user.delete({
+            where: {
+                userid: userid,
+            },
+        });
+    }
+
     async findUserByEmail(email: string) {
         const user = await this.prisma.user.findUnique({
             where: {

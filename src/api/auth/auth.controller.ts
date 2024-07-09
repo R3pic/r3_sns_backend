@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto } from '../../types/dto/auth.dto';
+import passport from 'passport';
+import { User } from '@prisma/client';
 
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
@@ -70,12 +72,68 @@ export class AuthController {
      *        description: Not Found
      */
     login = async (req: Request, res: Response, next: NextFunction) => {
-        const loginDto: LoginDto = req.body;
-        try {
-            const result = await this.authService.login(loginDto);
-            res.status(200).json(result);
-        } catch (error) {
-            next(error);
-        }
+        passport.authenticate('local', { session: false }, (err: Error, user: Express.User, info: any) => {
+            console.log('user', user);
+            console.log('info', info);
+            if (err) {
+                return next(err);
+            }
+
+            if (!user) {
+                return next(info);
+            }
+
+            req.logIn(user, { session: false }, async (err) => {
+                if (err) {
+                    return next(err);
+                }
+                try {
+                    const accessToken = this.authService.getAccessToken(user);
+                    res.cookie('accessToken', accessToken, { httpOnly: false, secure: false });
+                    res.status(200).json(user);
+                } catch (error) {
+                    next(error);
+                }
+            });
+        })(req, res, next);
+    }
+
+    /**Swagger
+     * @swagger
+     * /auth/withdrawal:
+     *  delete:
+     *   summary: Withdrawal
+     *  tags: [Auth]
+     * responses:
+     * 200:
+     * description: OK
+     * 401:
+     * description: Unauthorized
+     * 404:
+     * description: Not Found
+    */
+    withdrawal = async (req: Request, res: Response, next: NextFunction) => {
+        passport.authenticate('jwt', { session: false }, (err: Error, user: User, info: any) => {
+            if (err) {
+                return next(err);
+            }
+
+            if (!user) {
+                return next(info);
+            }
+
+            req.logIn(user, { session: false }, async (err) => {
+                if (err) {
+                    return next(err);
+                }
+                try {
+                    const result = await this.authService.withdrawal(user);
+                    res.clearCookie('accessToken');
+                    res.status(200).json(result);
+                } catch (error) {
+                    next(error);
+                }
+            });
+        })(req, res, next);
     }
 }

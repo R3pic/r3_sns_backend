@@ -1,6 +1,8 @@
 import 'dotenv/config'
 import express from 'express';
 import cors from 'cors';
+import passport from 'passport';
+import './passport/passport.config';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import swaggerOptions from './swagger/swaggeroption';
@@ -25,6 +27,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 // Middleware
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
+router.use(passport.initialize());
 
 // Router
 router.use('/auth', authRouter);

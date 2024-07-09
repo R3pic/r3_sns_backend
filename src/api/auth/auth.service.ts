@@ -1,7 +1,9 @@
 import { UserRepository } from '../user/user.repository';
 import { RegisterDto, LoginDto } from 'src/types/dto/auth.dto';
+import jwt from 'jsonwebtoken';
 import createError from 'http-errors';
 import bcrypt from 'bcrypt';
+import { User } from '@prisma/client';
 
 export class AuthService {
     private readonly userRepository: UserRepository;
@@ -10,14 +12,14 @@ export class AuthService {
         this.userRepository = new UserRepository();
     }
 
-    async register(registerDto: RegisterDto) {
+    register = async (registerDto: RegisterDto) => {
         const user = await this.userRepository.findUserByEmail(registerDto.email);
 
         if (user) {
             throw createError(409, { name: 'Conflict Error', message: 'User already exists' });
         }
 
-        const hashedPassword = await bcrypt.hash(registerDto.password, 10);
+        const hashedPassword = await bcrypt.hash(registerDto.password, process.env.SALT_ROUNDS || 10);
         registerDto.password = hashedPassword;
 
         const newUser = await this.userRepository.createUser(registerDto);
@@ -29,7 +31,7 @@ export class AuthService {
         };
     }
 
-    async login(loginDto: LoginDto) {
+    login = async (loginDto: LoginDto) => {
         const user = await this.userRepository.findUserByUserId(loginDto.userid);
 
         if (!user) {
@@ -46,5 +48,22 @@ export class AuthService {
             nickname: user.nickname,
             userid: user.userid,
         };
+    }
+
+    withdrawal = async (user: User) => {
+
+        if (!user) {
+            throw createError(404, { name: 'Not Found Error', message: 'User does not exist' });
+        }
+
+        await this.userRepository.deleteUser(user.userid);
+
+        return {
+            message: 'User has been deleted',
+        };
+    }
+
+    getAccessToken = (user: {}) => {
+        return jwt.sign(user, process.env.JWT_ACCESS_SECRET || 'asdf', { expiresIn: '1h' });
     }
 }
