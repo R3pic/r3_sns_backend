@@ -30,7 +30,8 @@
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "prisma": "^5.16.1",
-    "r3_sns_backend": "link:"
+    "r3_sns_backend": "link:",
+    "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",

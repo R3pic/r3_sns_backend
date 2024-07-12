@@ -1,4 +1,5 @@
 import 'dotenv/config'
+import 'reflect-metadata';
 import express from 'express';
 import cors from 'cors';
 import passport from 'passport';
@@ -9,6 +10,7 @@ import swaggerOptions from './swagger/swaggeroption';
 import ErrorHandler from './common/ErrorHandler';
 import { authRouter } from './api/auth/auth.router';
 import { userRouter } from './api/user/user.router';
+import { articleRouter } from './api/article/article.router';
 import NotFoundHandler from './common/NotFoundHandler';
 
 const app = express();
@@ -32,6 +34,7 @@ router.use(passport.initialize());
 // Router
 router.use('/auth', authRouter);
 router.use('/user', userRouter);
+router.use('/articles', articleRouter);
 router.use(NotFoundHandler);
 router.use(ErrorHandler);
 

@@ -27,7 +27,7 @@ model User {
 
 model Article {
   id        Int      @id @default(autoincrement())
-  content   String
+  content   String   @db.VarChar(280)
   authorid  Int      @map("author_id")
   author    User     @relation(fields: [authorid], references: [id])
   createdAt DateTime @default(now())
