@@ -38,7 +38,7 @@ describe('UserService (검증)', () => {
 
             expect(result).toEqual({
                 nickname: 'existingNickname',
-                userid: 'existingUser',
+                username: 'existingUser',
             });
         });
     });

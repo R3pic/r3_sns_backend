@@ -5,14 +5,14 @@ export class UserService {
     constructor(private userRepository: UserRepository) {}
 
     getUserbyId = async (userid: string) => {
-        const user = await this.userRepository.findUserByUserId(userid);
+        const user = await this.userRepository.findUserByUsername(userid);
         if (!user) {
             throw createError(404, { name: 'Not Found Error', message: 'User does not exist' });
         }
 
         return {
             nickname: user.nickname,
-            userid: user.userid,
+            username: user.username,
         };
     }
 
@@ -24,7 +24,7 @@ export class UserService {
 
         return {
             nickname: user.nickname,
-            userid: user.userid,
+            username: user.username,
         };
     }
 }
