@@ -13,7 +13,7 @@ const jwtOptions = {
 
 export const jwtStrategy = new Strategy(jwtOptions, async (jwtPayload, done) => {
     try {
-        const user = await userRepository.findUserByUserId(jwtPayload.userid);
+        const user = await userRepository.findUserByUsername(jwtPayload.username);
         if (!user) {
             return done(null, false, { message: 'User does not exist' });
         }
