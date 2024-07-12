@@ -2,6 +2,7 @@ import { validateOrReject, ValidationError } from 'class-validator';
 import { plainToClass } from 'class-transformer';
 import { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
+import { parseValidationErrors } from './parseValidationErrors';
 
 export function validateQuery(schema: { new (): any }) {
   return async function (req: Request, res: Response, next: NextFunction) {
@@ -18,16 +19,3 @@ export function validateQuery(schema: { new (): any }) {
     }
   };
 }
-
-const parseValidationErrors = (error: ValidationError[]) => {
-  return error.map((err: ValidationError) => {
-    if (err.constraints) {
-      const messages = Object.values(err.constraints);
-      return {
-        field: err.property,
-        value: err.value,
-        reasons: messages,
-      };
-    }
-  });
-};

@@ -2,6 +2,7 @@ import { validateOrReject, ValidationError } from 'class-validator';
 import { plainToClass } from 'class-transformer';
 import { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
+import { parseValidationErrors } from './parseValidationErrors';
 
 export function validateParams(schema: { new (): any }) {
   return async function (req: Request, res: Response, next: NextFunction) {
@@ -15,20 +16,6 @@ export function validateParams(schema: { new (): any }) {
         const validationErrors = parseValidationErrors(error);
         return next(createError(400, { name: 'Bad Request', message: 'Validation Error', errors: validationErrors }));
       }
-      return next(createError(500, 'Internal Server Error'));
     }
   };
 }
-
-const parseValidationErrors = (error: ValidationError[]) => {
-  return error.map((err: ValidationError) => {
-    if (err.constraints) {
-      const messages = Object.values(err.constraints);
-      return {
-        field: err.property,
-        value: err.value,
-        reasons: messages,
-      };
-    }
-  });
-};
