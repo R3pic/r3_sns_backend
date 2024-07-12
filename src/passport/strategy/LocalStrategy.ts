@@ -9,7 +9,7 @@ export const localStrategy = new Strategy({
     passwordField: 'password',
 }, async (userid, password, done) => {
     try {
-        const user = await userRepository.findUserByUserId(userid);
+        const user = await userRepository.findUserByUsername(userid);
         if (!user) {
             return done(null, false, { message: 'User does not exist' });
         }
