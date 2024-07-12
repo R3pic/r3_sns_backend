@@ -27,12 +27,12 @@ export class AuthService {
         return {
             email: newUser.email,
             nickname: newUser.nickname,
-            userid: newUser.userid,
+            username: newUser.username,
         };
     }
 
     login = async (loginDto: LoginDto) => {
-        const user = await this.userRepository.findUserByUserId(loginDto.userid);
+        const user = await this.userRepository.findUserByUsername(loginDto.username);
 
         if (!user) {
             throw createError(404, { name: 'Not Found Error', message: 'User does not exist' });
@@ -46,17 +46,16 @@ export class AuthService {
         return {
             email: user.email,
             nickname: user.nickname,
-            userid: user.userid,
+            username: user.username,
         };
     }
 
     withdrawal = async (user: User) => {
-
         if (!user) {
             throw createError(404, { name: 'Not Found Error', message: 'User does not exist' });
         }
 
-        await this.userRepository.deleteUser(user.userid);
+        await this.userRepository.deleteUser(user.username);
 
         return {
             message: 'User has been deleted',

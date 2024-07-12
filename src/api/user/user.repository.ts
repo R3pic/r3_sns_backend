@@ -12,7 +12,7 @@ export class UserRepository {
         const user = await this.prisma.user.create({
             data: {
                 email: createUserDto.email,
-                username: createUserDto.userid,
+                username: createUserDto.username,
                 password: createUserDto.password,
                 nickname: createUserDto.nickname,
             },
