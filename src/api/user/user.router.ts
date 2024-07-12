@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { UserService } from "./user.service";
 import { UserController } from "./user.controller";
-import { validateParams } from "../../validator/validateParams";
+import { validateParams } from "../../validators/validateParams";
 import { GetUserbyIdParamsDto } from "../../types/dto/user.dto";
 import { UserRepository } from "./user.repository";
 

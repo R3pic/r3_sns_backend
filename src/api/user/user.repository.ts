@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { CreateUserDto, User } from '../../types/dto/user.dto';
+import { CreateUserDto } from '../../types/dto/user.dto';
 
 export class UserRepository {
     private prisma: PrismaClient;
@@ -12,7 +12,7 @@ export class UserRepository {
         const user = await this.prisma.user.create({
             data: {
                 email: createUserDto.email,
-                userid: createUserDto.userid,
+                username: createUserDto.userid,
                 password: createUserDto.password,
                 nickname: createUserDto.nickname,
             },
@@ -21,10 +21,10 @@ export class UserRepository {
         return user;
     }
 
-    async deleteUser(userid: string) {
+    async deleteUser(username: string) {
         await this.prisma.user.delete({
             where: {
-                userid: userid,
+                username: username,
             },
         });
     }
@@ -39,10 +39,10 @@ export class UserRepository {
         return user;
     }
 
-    async findUserByUserId(userid: string) {
+    async findUserByUsername(username: string) {
         const user = await this.prisma.user.findUnique({
             where: {
-                userid: userid,
+                username: username,
             },
         });
 

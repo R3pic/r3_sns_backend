@@ -9,7 +9,7 @@ export class RegisterDto {
     @IsString()
     @MinLength(5)
     @MaxLength(20)
-    userid!: string;
+    username!: string;
 
     @IsDefined()
     @IsString()
@@ -26,7 +26,7 @@ export class LoginDto {
     @IsString()
     @MinLength(5)
     @MaxLength(20)
-    userid!: string;
+    username!: string;
 
     @IsNotEmpty()
     @IsString()

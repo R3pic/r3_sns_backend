@@ -20,7 +20,7 @@ export const localStrategy = new Strategy({
         }
 
         return done(null, {
-            userid: user.userid,
+            username: user.username,
             email: user.email,
             nickname: user.nickname,
         });

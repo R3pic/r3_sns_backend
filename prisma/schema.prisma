@@ -15,9 +15,32 @@ datasource db {
 
 model User {
   id        Int      @id @default(autoincrement())
-  userid    String   @unique
+  username  String   @unique
   email     String   @unique
   nickname  String
   password  String
+  createdAt DateTime @default(now())
+
+  articles  Article[]
+  favorites Favorite[]
+}
+
+model Article {
+  id        Int      @id @default(autoincrement())
+  content   String
+  authorid  Int      @map("author_id")
+  author    User     @relation(fields: [authorid], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  favorites Favorite[]
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userid    Int      
+  user      User     @relation(fields: [userid], references: [id])
+  articleid Int      @map("article_id")
+  article   Article  @relation(fields: [articleid], references: [id])
   createdAt DateTime @default(now())
 }

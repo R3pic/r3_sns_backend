@@ -15,7 +15,7 @@ describe('UserService (검증)', () => {
         it('getUserbyId 존재하지 않는 사용자', async () => {
             const userid = 'existingUser';
 
-            jest.spyOn(UserRepository.prototype, 'findUserByUserId').mockResolvedValue(null);
+            jest.spyOn(UserRepository.prototype, 'findUserByUsername').mockResolvedValue(null);
 
             await expect(userService.getUserbyId(userid)).rejects.toThrowError(
                 createError(404, { name: 'Not Found Error', message: 'User does not exist' })
@@ -25,10 +25,10 @@ describe('UserService (검증)', () => {
         it('getUserbyId 존재하는 사용자', async () => {
             const userid = 'existingUser';
 
-            jest.spyOn(UserRepository.prototype, 'findUserByUserId').mockResolvedValue({
+            jest.spyOn(UserRepository.prototype, 'findUserByUsername').mockResolvedValue({
                 id: 1,
                 email: 'test@gmail.com',
-                userid: 'existingUser',
+                username: 'existingUser',
                 nickname: 'existingNickname',
                 password: 'existingPassword',
                 createdAt: new Date(),

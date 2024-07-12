@@ -20,7 +20,7 @@ describe('AuthService (검증)', () => {
         it('register시 동일한 이메일 존재할 경우', async () => {
             const registerDto: RegisterDto = {
                 email: 'test@gmail.com',
-                userid: '101osc',
+                username: '101osc',
                 nickname: '101osc',
                 password: '1234',
             };
@@ -28,7 +28,7 @@ describe('AuthService (검증)', () => {
             jest.spyOn(UserRepository.prototype, 'findUserByEmail').mockResolvedValue({
                 id: 1,
                 email: 'test@gmail.com',
-                userid: '101osc',
+                username: '101osc',
                 nickname: '101osc',
                 password: '1234',
                 createdAt: new Date(),
@@ -42,7 +42,7 @@ describe('AuthService (검증)', () => {
         it('register시 가입 성공', async () => {
             const registerDto: RegisterDto = {
                 email: 'newuser@gmail.com',
-                userid: 'newuser',
+                username: 'newuser',
                 nickname: 'newuser',
                 password: 'password',
             };
@@ -52,7 +52,7 @@ describe('AuthService (검증)', () => {
             jest.spyOn(UserRepository.prototype, 'createUser').mockResolvedValue({
                 id: 2,
                 email: 'newuser@gmail.com',
-                userid: 'newuser',
+                username: 'newuser',
                 nickname: 'newuser',
                 password: 'password',
                 createdAt: new Date(),
@@ -63,7 +63,7 @@ describe('AuthService (검증)', () => {
             expect(result).toEqual({
                 email: 'newuser@gmail.com',
                 nickname: 'newuser',
-                userid: 'newuser',
+                username: 'newuser',
             });
         });
     });
@@ -75,11 +75,11 @@ describe('AuthService (검증)', () => {
 
         it('login 존재하지 않는 사용자', async () => {
             const loginDto = {
-                userid: 'nonExistingUser',
+                username: 'nonExistingUser',
                 password: 'password',
             };
 
-            jest.spyOn(UserRepository.prototype, 'findUserByUserId').mockResolvedValue(null);
+            jest.spyOn(UserRepository.prototype, 'findUserByUsername').mockResolvedValue(null);
 
             await expect(authService.login(loginDto)).rejects.toThrowError(
                 createError(404, { name: 'Not Found Error', message: 'User does not exist' })
@@ -88,14 +88,14 @@ describe('AuthService (검증)', () => {
 
         it('login 비밀번호 불일치', async () => {
             const loginDto = {
-                userid: 'existingUser',
+                username: 'existingUser',
                 password: 'incorrectPassword',
             };
 
-            jest.spyOn(UserRepository.prototype, 'findUserByUserId').mockResolvedValue({
+            jest.spyOn(UserRepository.prototype, 'findUserByUsername').mockResolvedValue({
                 id: 1,
                 email: 'existingUser@email.com',
-                userid: 'existingUser',
+                username: 'existingUser',
                 nickname: 'existingNickname',
                 password: 'correctPassword',
                 createdAt: new Date(),
@@ -112,14 +112,14 @@ describe('AuthService (검증)', () => {
 
         it('login 성공', async () => {
             const loginDto = {
-                userid: 'existingUser',
+                username: 'existingUser',
                 password: 'correctPassword',
             };
         
-            jest.spyOn(UserRepository.prototype, 'findUserByUserId').mockResolvedValue({
+            jest.spyOn(UserRepository.prototype, 'findUserByUsername').mockResolvedValue({
                 id: 1,
                 email: 'existingUser@email.com',
-                userid: 'existingUser',
+                username: 'existingUser',
                 nickname: 'existingNickname',
                 password: 'correctPassword',
                 createdAt: new Date(),
@@ -135,7 +135,7 @@ describe('AuthService (검증)', () => {
             expect(result).toEqual({
                 email: 'existingUser@email.com',
                 nickname: 'existingNickname',
-                userid: 'existingUser',
+                username: 'existingUser',
             });
         });
     });
