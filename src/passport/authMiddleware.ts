@@ -9,7 +9,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
         }
 
         if (!user) {
-            return next(createError(401, { name: 'Unauthorized Error', message: 'Access token is invalid' }));
+            return next(createError(401, { name: 'Unauthorized Error', message: 'Unauthorized' }));
         }
 
         req.user = user;

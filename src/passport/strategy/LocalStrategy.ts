@@ -5,7 +5,7 @@ import { UserRepository } from '../../api/user/user.repository';
 const userRepository = new UserRepository();
 
 export const localStrategy = new Strategy({
-    usernameField: 'userid',
+    usernameField: 'username',
     passwordField: 'password',
 }, async (userid, password, done) => {
     try {
