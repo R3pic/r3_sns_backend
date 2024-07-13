@@ -5,13 +5,13 @@ import createHttpError from "http-errors";
 export class ArticleService {
     constructor(private readonly articleRepository: ArticleRepository) {}
 
-    async getRecentArticles(page: number): Promise<Article[]> {
-        const articles: Article[] = await this.articleRepository.findRecentArticles(page, 5);
+    async getRecentArticles(page: number, perPage: number): Promise<Article[]> {
+        const articles: Article[] = await this.articleRepository.findRecentArticles(page, perPage);
         return articles;
     }
 
-    async getRecentArticlesByUsername(username: string, page: number): Promise<Article[]> {
-        const articles: Article[] = await this.articleRepository.findRecentArticles(page, 5, { author: { username } });
+    async getRecentArticlesByUsername(username: string, page: number, perPage: number): Promise<Article[]> {
+        const articles: Article[] = await this.articleRepository.findRecentArticles(page, perPage, { author: { username } });
         return articles;
     }
 

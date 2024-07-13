@@ -25,11 +25,15 @@ export type CreateArticleDto = {
     content: string;
 };
 
-export class GetArticlesByUsernameRequest {
+export class GetRecentArticlesRequest {
     @IsNotEmpty()
     @IsNumber()
     @Type(() => Number)
     page: number;
+
+    @IsNumber()
+    @Type(() => Number)
+    perPage: number;
 };
 
 export class GetArticleByIdRequest {

@@ -92,19 +92,21 @@ export class ArticleController {
      */
     getRecentArticles = async (req: Request, res: Response, next: NextFunction) => {
         const page = Number(req.query.page) || 1;
+        const perPage = Number(req.query.perPage) || 5;
         try {
-            const articles = await this.articleService.getRecentArticles(page);
+            const articles = await this.articleService.getRecentArticles(page, perPage);
             res.status(200).json(articles);
         } catch (error) {
             next(error);
         }
     }
 
-    getArticlesByUsername = async (req: Request, res: Response, next: NextFunction) => {
+    getRecentArticlesByUsername = async (req: Request, res: Response, next: NextFunction) => {
         const page = Number(req.query.page) || 1;
+        const perPage = Number(req.query.perPage) || 5;
         const username = req.params.username;
         try {
-            const articles = await this.articleService.getRecentArticlesByUsername(username, page)
+            const articles = await this.articleService.getRecentArticlesByUsername(username, page, perPage);
             res.status(200).json(articles);
         } catch (error) {
             next(error);
