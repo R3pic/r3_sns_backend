@@ -65,4 +65,28 @@ export class AuthService {
     getAccessToken = (user: {}) => {
         return jwt.sign(user, process.env.JWT_ACCESS_SECRET || 'asdf', { expiresIn: '1h' });
     }
+
+    getRefreshToken = (user: {}) => {
+        return jwt.sign(user, process.env.JWT_REFRESH_SECRET || 'fdsa', { expiresIn: '14d' });
+    }
+
+    refresh = async (refreshToken: string) => {
+        try {
+            const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'fdsa';
+            const decoded = jwt.verify(refreshToken, REFRESH_SECRET) as { username: string };
+            const user = await this.userRepository.findUserByUsername(decoded.username);
+
+            if (!user) {
+                throw createError(404, { name: 'Not Found Error', message: 'User does not exist' });
+            }
+
+            return {
+                username: user.username,
+                email: user.email,
+                nickname: user.nickname,
+            };
+        } catch (error) {
+            throw createError(401, { name: 'Unauthorized Error', message: 'Invalid refresh token' });
+        }
+    }
 }

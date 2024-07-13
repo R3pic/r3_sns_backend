@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto } from '../../types/dto/auth.dto';
 import passport from 'passport';
 import { User } from '@prisma/client';
+import createHttpError from 'http-errors';
 
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
@@ -73,8 +74,6 @@ export class AuthController {
      */
     login = async (req: Request, res: Response, next: NextFunction) => {
         passport.authenticate('local', { session: false }, (err: Error, user: Express.User, info: any) => {
-            console.log('user', user);
-            console.log('info', info);
             if (err) {
                 return next(err);
             }
@@ -89,7 +88,9 @@ export class AuthController {
                 }
                 try {
                     const accessToken = this.authService.getAccessToken(user);
-                    res.cookie('accessToken', accessToken, { httpOnly: false, secure: false });
+                    const refreshToken = this.authService.getRefreshToken(user);
+                    res.cookie('accessToken', accessToken, { httpOnly: true, secure: false });
+                    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: false });
                     res.status(200).json(user);
                 } catch (error) {
                     next(error);
@@ -138,11 +139,38 @@ export class AuthController {
                 try {
                     const result = await this.authService.withdrawal(user);
                     res.clearCookie('accessToken');
+                    res.clearCookie('refreshToken');
                     res.status(200).json(result);
                 } catch (error) {
                     next(error);
                 }
             });
         })(req, res, next);
+    }
+
+    refresh = async (req: Request, res: Response, next: NextFunction) => {
+        const refreshToken = req.cookies['refreshToken'];
+
+        if (!refreshToken) {
+            return next(createHttpError(401, { name: 'Unauthorized Error', message: 'Refresh token is required' }));
+        }
+
+        try {
+            const payload = await this.authService.refresh(refreshToken);
+            const accessToken = this.authService.getAccessToken(payload);
+            res.cookie('accessToken', accessToken, { httpOnly: true, secure: false });
+            res.status(200).json(payload);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    check = async (req: Request, res: Response, next: NextFunction) => {
+        const user = req.user as User;
+        res.status(200).json({
+            username: user.username,
+            email: user.email,
+            nickname: user.nickname
+        });
     }
 }

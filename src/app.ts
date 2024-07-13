@@ -1,9 +1,10 @@
 import 'dotenv/config'
 import 'reflect-metadata';
+import './passport/passport.config';
 import express from 'express';
 import cors from 'cors';
 import passport from 'passport';
-import './passport/passport.config';
+import cookieParser from 'cookie-parser';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import swaggerOptions from './swagger/swaggeroption';
@@ -30,6 +31,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 // Middleware
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
+router.use(cookieParser());
 router.use(passport.initialize());
 
 // Router
