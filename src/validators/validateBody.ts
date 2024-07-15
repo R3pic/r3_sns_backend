@@ -12,9 +12,15 @@ export function validateBody(schema: { new (): any }) {
       await validateOrReject(target);
       return next();
     } catch (error: unknown) {
-      if (Array.isArray(error) && error.every(err => err instanceof ValidationError)) {
+      if (Array.isArray(error) && error.every((err) => err instanceof ValidationError)) {
         const validationErrors = parseValidationErrors(error);
-        return next(createError(400, { name: 'Bad Request', message: 'Validation Error', errors: validationErrors }));
+        return next(
+          createError(400, {
+            name: 'Bad Request',
+            message: 'Validation Error',
+            errors: validationErrors,
+          }),
+        );
       }
     }
   };

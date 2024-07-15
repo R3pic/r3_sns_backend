@@ -4,27 +4,30 @@ import { UserRepository } from '../../api/user/user.repository';
 
 const userRepository = new UserRepository();
 
-export const localStrategy = new Strategy({
+export const localStrategy = new Strategy(
+  {
     usernameField: 'username',
     passwordField: 'password',
-}, async (userid, password, done) => {
+  },
+  async (userid, password, done) => {
     try {
-        const user = await userRepository.findUserByUsername(userid);
-        if (!user) {
-            return done(null, false, { message: 'User does not exist' });
-        }
+      const user = await userRepository.findUserByUsername(userid);
+      if (!user) {
+        return done(null, false, { message: 'User does not exist' });
+      }
 
-        const isPasswordMatch = await bcrypt.compare(password, user.password);
-        if (!isPasswordMatch) {
-            return done(null, false, { message: 'Password is incorrect' });
-        }
+      const isPasswordMatch = await bcrypt.compare(password, user.password);
+      if (!isPasswordMatch) {
+        return done(null, false, { message: 'Password is incorrect' });
+      }
 
-        return done(null, {
-            username: user.username,
-            email: user.email,
-            nickname: user.nickname,
-        });
+      return done(null, {
+        username: user.username,
+        email: user.email,
+        nickname: user.nickname,
+      });
     } catch (error) {
-        return done(error);
+      return done(error);
     }
-});
+  },
+);

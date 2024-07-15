@@ -4,7 +4,7 @@ export type UserProfileDto = {
   username: string;
   nickname: string;
   introduce: string;
-}
+};
 
 export class GetUserbyIdParamsDto {
   @IsNotEmpty()

@@ -1,4 +1,4 @@
-import 'dotenv/config'
+import 'dotenv/config';
 import 'reflect-metadata';
 import './passport/passport.config';
 import express from 'express';
@@ -17,12 +17,14 @@ import NotFoundHandler from './common/NotFoundHandler';
 const app = express();
 const router = express.Router();
 
-app.use(cors({
+app.use(
+  cors({
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
-}))
+  }),
+);
 
 // Swagger
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -45,8 +47,8 @@ router.use(ErrorHandler);
 app.use('/api', router);
 
 app.listen(process.env.PORT, () => {
-    console.log(`Server is running on port ${process.env.PORT}`);
-    console.log(`Swagger is running on http://localhost:${process.env.PORT}/api-docs`);
+  console.log(`Server is running on port ${process.env.PORT}`);
+  console.log(`Swagger is running on http://localhost:${process.env.PORT}/api-docs`);
 });
 
 export default app;

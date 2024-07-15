@@ -6,93 +6,93 @@ import bcrypt from 'bcrypt';
 import { User } from '@prisma/client';
 
 export class AuthService {
-    private readonly userRepository: UserRepository;
+  private readonly userRepository: UserRepository;
 
-    constructor() {
-        this.userRepository = new UserRepository();
+  constructor() {
+    this.userRepository = new UserRepository();
+  }
+
+  register = async (registerDto: RegisterDto) => {
+    const userByemail = await this.userRepository.findUserByEmail(registerDto.email);
+
+    if (userByemail) {
+      throw createError(409, { name: 'Conflict Error', message: 'User already exists' });
     }
 
-    register = async (registerDto: RegisterDto) => {
-        const userByemail = await this.userRepository.findUserByEmail(registerDto.email);
+    const userByusername = await this.userRepository.findUserByUsername(registerDto.username);
 
-        if (userByemail) {
-            throw createError(409, { name: 'Conflict Error', message: 'User already exists' });
-        }
-
-        const userByusername = await this.userRepository.findUserByUsername(registerDto.username);
-
-        if (userByusername) {
-            throw createError(409, { name: 'Conflict Error', message: 'Username already exists' });
-        }
-
-        const hashedPassword = await bcrypt.hash(registerDto.password, process.env.SALT_ROUNDS || 10);
-        registerDto.password = hashedPassword;
-
-        const newUser = await this.userRepository.createUser(registerDto);
-
-        return {
-            username: newUser.username,
-            nickname: newUser.nickname,
-            email: newUser.email,
-        };
+    if (userByusername) {
+      throw createError(409, { name: 'Conflict Error', message: 'Username already exists' });
     }
 
-    login = async (loginDto: LoginDto) => {
-        const user = await this.userRepository.findUserByUsername(loginDto.username);
+    const hashedPassword = await bcrypt.hash(registerDto.password, process.env.SALT_ROUNDS || 10);
+    registerDto.password = hashedPassword;
 
-        if (!user) {
-            throw createError(404, { name: 'Not Found Error', message: 'User does not exist' });
-        }
+    const newUser = await this.userRepository.createUser(registerDto);
 
-        const isPasswordMatch = await bcrypt.compare(loginDto.password, user.password);
-        if (!isPasswordMatch) {
-            throw createError(401, { name: 'Unauthorized Error', message: 'Password is incorrect' });
-        }
+    return {
+      username: newUser.username,
+      nickname: newUser.nickname,
+      email: newUser.email,
+    };
+  };
 
-        return {
-            email: user.email,
-            nickname: user.nickname,
-            username: user.username,
-        };
+  login = async (loginDto: LoginDto) => {
+    const user = await this.userRepository.findUserByUsername(loginDto.username);
+
+    if (!user) {
+      throw createError(404, { name: 'Not Found Error', message: 'User does not exist' });
     }
 
-    withdrawal = async (user: User) => {
-        if (!user) {
-            throw createError(404, { name: 'Not Found Error', message: 'User does not exist' });
-        }
-
-        await this.userRepository.deleteUser(user.username);
-
-        return {
-            message: 'User has been deleted',
-        };
+    const isPasswordMatch = await bcrypt.compare(loginDto.password, user.password);
+    if (!isPasswordMatch) {
+      throw createError(401, { name: 'Unauthorized Error', message: 'Password is incorrect' });
     }
 
-    getAccessToken = (user: {}) => {
-        return jwt.sign(user, process.env.JWT_ACCESS_SECRET || 'asdf', { expiresIn: '1h' });
+    return {
+      email: user.email,
+      nickname: user.nickname,
+      username: user.username,
+    };
+  };
+
+  withdrawal = async (user: User) => {
+    if (!user) {
+      throw createError(404, { name: 'Not Found Error', message: 'User does not exist' });
     }
 
-    getRefreshToken = (user: {}) => {
-        return jwt.sign(user, process.env.JWT_REFRESH_SECRET || 'fdsa', { expiresIn: '14d' });
+    await this.userRepository.deleteUser(user.username);
+
+    return {
+      message: 'User has been deleted',
+    };
+  };
+
+  getAccessToken = (user: {}) => {
+    return jwt.sign(user, process.env.JWT_ACCESS_SECRET || 'asdf', { expiresIn: '1h' });
+  };
+
+  getRefreshToken = (user: {}) => {
+    return jwt.sign(user, process.env.JWT_REFRESH_SECRET || 'fdsa', { expiresIn: '14d' });
+  };
+
+  refresh = async (refreshToken: string) => {
+    try {
+      const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'fdsa';
+      const decoded = jwt.verify(refreshToken, REFRESH_SECRET) as { username: string };
+      const user = await this.userRepository.findUserByUsername(decoded.username);
+
+      if (!user) {
+        throw createError(404, { name: 'Not Found Error', message: 'User does not exist' });
+      }
+
+      return {
+        username: user.username,
+        email: user.email,
+        nickname: user.nickname,
+      };
+    } catch (error) {
+      throw createError(401, { name: 'Unauthorized Error', message: 'Invalid refresh token' });
     }
-
-    refresh = async (refreshToken: string) => {
-        try {
-            const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'fdsa';
-            const decoded = jwt.verify(refreshToken, REFRESH_SECRET) as { username: string };
-            const user = await this.userRepository.findUserByUsername(decoded.username);
-
-            if (!user) {
-                throw createError(404, { name: 'Not Found Error', message: 'User does not exist' });
-            }
-
-            return {
-                username: user.username,
-                email: user.email,
-                nickname: user.nickname,
-            };
-        } catch (error) {
-            throw createError(401, { name: 'Unauthorized Error', message: 'Invalid refresh token' });
-        }
-    }
+  };
 }
