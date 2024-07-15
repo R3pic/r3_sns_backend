@@ -16,8 +16,8 @@
   "packageManager": "pnpm@9.4.0+sha512.f549b8a52c9d2b8536762f99c0722205efc5af913e77835dbccc3b0b0b2ca9e7dc8022b78062c17291c48e88749c70ce88eb5a74f1fa8c4bf5e18bb46c8bd83a",
   "dependencies": {
     "@prisma/client": "5.16.2",
-    "bcrypt": "^5.1.1",
-    "class-transformer": "^0.5.1",
+    "bcrypt": "5.1.1",
+    "class-transformer": "0.5.1",
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
