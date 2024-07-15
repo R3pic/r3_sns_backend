@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { CreateUserDto } from '../../types/dto/user.dto';
+import { RegisterDto } from "../../types/dto/auth.dto";
 
 export class UserRepository {
     private prisma: PrismaClient;
@@ -8,13 +8,14 @@ export class UserRepository {
         this.prisma = new PrismaClient();
     }
 
-    async createUser(createUserDto: CreateUserDto) {
+    async createUser(registerUserDto: RegisterDto) {
         const user = await this.prisma.user.create({
             data: {
-                email: createUserDto.email,
-                username: createUserDto.username,
-                password: createUserDto.password,
-                nickname: createUserDto.nickname,
+                email: registerUserDto.email,
+                username: registerUserDto.username,
+                password: registerUserDto.password,
+                nickname: registerUserDto.nickname,
+                introduce: registerUserDto.introduce,
             },
         });
 

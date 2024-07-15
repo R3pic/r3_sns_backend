@@ -16,6 +16,11 @@ export class RegisterDto {
     @MaxLength(20)
     nickname!: string;
 
+    @IsDefined()
+    @IsString()
+    @MaxLength(160)
+    introduce!: string;
+
     @IsNotEmpty()
     @IsString()
     password!: string;

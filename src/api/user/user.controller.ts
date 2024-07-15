@@ -79,19 +79,8 @@ export class UserController {
      */
     getUserbyId = async (req: Request, res: Response, next: NextFunction) => {
         const { userid } = req.params;
-        this.userService.getUserbyId(userid)
-            .then((user) => {
-                res.status(200).json(user);
-            })
-            .catch((error) => {
-                next(error);
-            });
-    }
-
-    getUserbyEmail = async (req: Request, res: Response, next: NextFunction) => {
-        const { email } = req.params;
         try {
-            const user = await this.userService.getUserbyEmail(email);
+            const user = await this.userService.getUserbyId(userid);
             res.status(200).json(user);
         } catch (error) {
             next(error);

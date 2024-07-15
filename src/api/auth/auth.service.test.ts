@@ -23,6 +23,7 @@ describe('AuthService (검증)', () => {
                 username: '101osc',
                 nickname: '101osc',
                 password: '1234',
+                introduce: '',
             };
 
             jest.spyOn(UserRepository.prototype, 'findUserByEmail').mockResolvedValue({
@@ -31,6 +32,7 @@ describe('AuthService (검증)', () => {
                 username: '101osc',
                 nickname: '101osc',
                 password: '1234',
+                introduce: '',
                 createdAt: new Date(),
             });
     
@@ -45,6 +47,7 @@ describe('AuthService (검증)', () => {
                 username: 'newuser',
                 nickname: 'newuser',
                 password: 'password',
+                introduce: '',
             };
 
             jest.spyOn(UserRepository.prototype, 'findUserByEmail').mockResolvedValue(null);
@@ -55,6 +58,7 @@ describe('AuthService (검증)', () => {
                 username: 'newuser',
                 nickname: 'newuser',
                 password: 'password',
+                introduce: '',
                 createdAt: new Date(),
             });
     
@@ -98,6 +102,7 @@ describe('AuthService (검증)', () => {
                 username: 'existingUser',
                 nickname: 'existingNickname',
                 password: 'correctPassword',
+                introduce: '',
                 createdAt: new Date(),
             });
 
@@ -122,6 +127,7 @@ describe('AuthService (검증)', () => {
                 username: 'existingUser',
                 nickname: 'existingNickname',
                 password: 'correctPassword',
+                introduce: '',
                 createdAt: new Date(),
             });
 

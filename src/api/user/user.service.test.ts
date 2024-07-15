@@ -31,6 +31,7 @@ describe('UserService (검증)', () => {
                 username: 'existingUser',
                 nickname: 'existingNickname',
                 password: 'existingPassword',
+                introduce: '',
                 createdAt: new Date(),
             });
 
@@ -39,6 +40,7 @@ describe('UserService (검증)', () => {
             expect(result).toEqual({
                 nickname: 'existingNickname',
                 username: 'existingUser',
+                introduce: '',
             });
         });
     });

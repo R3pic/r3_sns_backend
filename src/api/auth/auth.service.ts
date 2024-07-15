@@ -13,10 +13,16 @@ export class AuthService {
     }
 
     register = async (registerDto: RegisterDto) => {
-        const user = await this.userRepository.findUserByEmail(registerDto.email);
+        const userByemail = await this.userRepository.findUserByEmail(registerDto.email);
 
-        if (user) {
+        if (userByemail) {
             throw createError(409, { name: 'Conflict Error', message: 'User already exists' });
+        }
+
+        const userByusername = await this.userRepository.findUserByUsername(registerDto.username);
+
+        if (userByusername) {
+            throw createError(409, { name: 'Conflict Error', message: 'Username already exists' });
         }
 
         const hashedPassword = await bcrypt.hash(registerDto.password, process.env.SALT_ROUNDS || 10);
@@ -25,9 +31,9 @@ export class AuthService {
         const newUser = await this.userRepository.createUser(registerDto);
 
         return {
-            email: newUser.email,
-            nickname: newUser.nickname,
             username: newUser.username,
+            nickname: newUser.nickname,
+            email: newUser.email,
         };
     }
 
