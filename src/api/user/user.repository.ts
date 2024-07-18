@@ -1,52 +1,52 @@
 import { PrismaClient } from '@prisma/client';
 import { RegisterDto } from '../../types/dto/auth.dto';
 
-export class UserRepository {
-  private prisma: PrismaClient;
+const prisma = new PrismaClient();
 
-  constructor() {
-    this.prisma = new PrismaClient();
-  }
+const createUser = async (registerUserDto: RegisterDto) => {
+  const user = await prisma.user.create({
+    data: {
+      email: registerUserDto.email,
+      username: registerUserDto.username,
+      password: registerUserDto.password,
+      nickname: registerUserDto.nickname,
+      introduce: registerUserDto.introduce,
+    },
+  });
+  return user;
+};
 
-  async createUser(registerUserDto: RegisterDto) {
-    const user = await this.prisma.user.create({
-      data: {
-        email: registerUserDto.email,
-        username: registerUserDto.username,
-        password: registerUserDto.password,
-        nickname: registerUserDto.nickname,
-        introduce: registerUserDto.introduce,
-      },
-    });
+const deleteUser = async (username: string) => {
+  return await prisma.user.delete({
+    where: {
+      username: username,
+    },
+  });
+};
 
-    return user;
-  }
+const findUserByEmail = async (email: string) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
 
-  async deleteUser(username: string) {
-    await this.prisma.user.delete({
-      where: {
-        username: username,
-      },
-    });
-  }
+  return user;
+};
 
-  async findUserByEmail(email: string) {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        email: email,
-      },
-    });
+const findUserByUsername = async (username: string) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      username: username,
+    },
+  });
 
-    return user;
-  }
+  return user;
+};
 
-  async findUserByUsername(username: string) {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        username: username,
-      },
-    });
-
-    return user;
-  }
-}
+export const UserRepository = {
+  createUser,
+  deleteUser,
+  findUserByEmail,
+  findUserByUsername,
+};

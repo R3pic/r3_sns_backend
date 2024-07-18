@@ -2,37 +2,40 @@ import { ArticleRepository } from './article.repository';
 import { Article, CreateArticleDto } from '../../types/dto/article.dto';
 import createHttpError from 'http-errors';
 
-export class ArticleService {
-  constructor(private readonly articleRepository: ArticleRepository) {}
+const getRecentArticles = async (page: number, perPage: number): Promise<Article[]> => {
+  const articles: Article[] = await ArticleRepository.findRecentArticles(page, perPage);
+  return articles;
+};
 
-  async getRecentArticles(page: number, perPage: number): Promise<Article[]> {
-    const articles: Article[] = await this.articleRepository.findRecentArticles(page, perPage);
-    return articles;
+const getRecentArticlesByUsername = async (
+  username: string,
+  page: number,
+  perPage: number,
+): Promise<Article[]> => {
+  const articles: Article[] = await ArticleRepository.findRecentArticles(page, perPage, {
+    author: { username },
+  });
+  return articles;
+};
+
+const getArticleById = async (id: number): Promise<Article> => {
+  const article = await ArticleRepository.findArticleById(id);
+  if (!article) {
+    throw createHttpError(404, 'Article not found');
   }
+  return article;
+};
 
-  async getRecentArticlesByUsername(
-    username: string,
-    page: number,
-    perPage: number,
-  ): Promise<Article[]> {
-    const articles: Article[] = await this.articleRepository.findRecentArticles(page, perPage, {
-      author: { username },
-    });
-    return articles;
-  }
+const createArticle = async (createArticleDto: CreateArticleDto): Promise<Article> => {
+  const { userid, content } = createArticleDto;
+  const article: Article = await ArticleRepository.createArticle(userid, content);
 
-  async getArticleById(id: number): Promise<Article> {
-    const article = await this.articleRepository.findArticleById(id);
-    if (!article) {
-      throw createHttpError(404, 'Article not found');
-    }
-    return article;
-  }
+  return article;
+};
 
-  async createArticle(createArticleDto: CreateArticleDto): Promise<Article> {
-    const { userid, content } = createArticleDto;
-    const article: Article = await this.articleRepository.createArticle(userid, content);
-
-    return article;
-  }
-}
+export const ArticleService = {
+  getRecentArticles,
+  getRecentArticlesByUsername,
+  getArticleById,
+  createArticle,
+};
