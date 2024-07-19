@@ -9,7 +9,7 @@ import { validateParams } from '../../validators/validateParams';
 import {
   CreateArticleRequest,
   GetRecentArticlesRequest,
-  GetArticleByIdRequest,
+  ArticleByIdParamsRequest,
 } from '../../types/dto/article.dto';
 
 export const articleRouter = Router();
@@ -32,6 +32,12 @@ articleRouter.get(
 );
 articleRouter.get(
   '/:articleid',
-  validateParams(GetArticleByIdRequest),
+  validateParams(ArticleByIdParamsRequest),
   ArticleController.getArticleById,
+);
+articleRouter.delete(
+  '/:articleid',
+  authMiddleware,
+  validateParams(ArticleByIdParamsRequest),
+  ArticleController.deleteArticleById,
 );

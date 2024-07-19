@@ -155,7 +155,7 @@ const refresh = async (req: Request, res: Response, next: NextFunction) => {
 
   if (!refreshToken) {
     return next(
-      createHttpError(401, { name: 'Unauthorized Error', message: 'Refresh token is required' }),
+      createHttpError(405, { name: 'Unauthorized Error', message: 'Refresh token is required' }),
     );
   }
 

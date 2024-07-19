@@ -121,9 +121,20 @@ const getArticleById = async (req: Request, res: Response, next: NextFunction) =
   }
 };
 
+const deleteArticleById = async (req: Request, res: Response, next: NextFunction) => {
+  const id = Number(req.params.articleid);
+  try {
+    await ArticleService.deleteArticleById(id);
+    res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const ArticleController = {
   createArticle,
   getRecentArticles,
   getRecentArticlesByUsername,
   getArticleById,
+  deleteArticleById,
 };

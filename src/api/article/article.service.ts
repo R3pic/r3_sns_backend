@@ -33,9 +33,18 @@ const createArticle = async (createArticleDto: CreateArticleDto): Promise<Articl
   return article;
 };
 
+const deleteArticleById = async (id: number): Promise<void> => {
+  const article = await ArticleRepository.findArticleById(id);
+  if (!article) {
+    throw createHttpError(404, 'Article not found');
+  }
+  await ArticleRepository.deleteArticleById(id);
+};
+
 export const ArticleService = {
   getRecentArticles,
   getRecentArticlesByUsername,
   getArticleById,
   createArticle,
+  deleteArticleById,
 };

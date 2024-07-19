@@ -36,7 +36,7 @@ export class GetRecentArticlesRequest {
   perPage: number;
 }
 
-export class GetArticleByIdRequest {
+export class ArticleByIdParamsRequest {
   @IsNotEmpty()
   @IsNumber()
   @Type(() => Number)

@@ -76,7 +76,7 @@ const createArticle = async (userid: number, content: string) => {
   return article;
 };
 
-const deleteArticle = async (id: number) => {
+const deleteArticleById = async (id: number) => {
   await prisma.article.delete({
     where: {
       id: id,
@@ -88,5 +88,5 @@ export const ArticleRepository = {
   findRecentArticles,
   findArticleById,
   createArticle,
-  deleteArticle,
+  deleteArticleById,
 };
